@@ -12,10 +12,10 @@
     width:100%;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color:#fff;
-    background:#000;
     overflow-x:hidden;
+    background:#000;
   }
-
+  /* Full-screen blurred background */
   body::before {
     content:"";
     position:fixed;
@@ -32,7 +32,7 @@
     -webkit-backdrop-filter: blur(15px);
     border-radius: 20px;
     padding:20px;
-    margin:20px;
+    margin:20px auto;
     width:90%;
     max-width:800px;
     box-shadow: 0 0 30px rgba(0,0,0,0.5);
@@ -41,10 +41,7 @@
   h1, h2 { text-align:center; margin-bottom:10px; }
 
   /* Year Progress Bar */
-  .progress-wrap {
-    margin-top:20px;
-    position:relative;
-  }
+  .progress-wrap { margin-top:20px; position:relative; }
   .bar {
     width:100%;
     height:30px;
@@ -70,7 +67,7 @@
     text-shadow:0 0 5px #000;
   }
 
-  /* Dates */
+  /* Dates display */
   .dates { margin-top:10px; line-height:1.4em; text-align:center; }
 
   /* Countdown timers */
@@ -198,8 +195,8 @@
   setInterval(updateCountdowns,1000);
   updateCountdowns();
 
-  // NASA APOD background
-  const API_KEY = "DEMO_KEY"; // Replace with your own NASA API key
+  // NASA APOD background using safe DEMO_KEY for GitHub Pages
+  const API_KEY = "DEMO_KEY"; // safe for public GitHub Pages
   fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
     .then(res=>res.json())
     .then(data=>{
