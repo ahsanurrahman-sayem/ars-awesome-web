@@ -1,187 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Awesome Year Progress</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Awesome Space Dashboard</title>
+<style>
+  /* Body & background */
+  body {
+    margin:0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color:#fff;
+    min-height:100vh;
+    overflow-x:hidden;
+    background: #000;
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  body::before {
+    content:"";
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    background:inherit;
+    filter:blur(15px) brightness(0.5);
+    z-index:-1;
+  }
+  
+  section {
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding:20px;
+    margin:20px;
+    width:90%;
+    max-width:800px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.5);
+  }
 
-	<style>
-		body {
-			margin: 0;
-			font-family: Arial, sans-serif;
-			background: #0d1117;
-			color: #fff;
-		}
+  h1, h2 { text-align:center; margin-bottom:10px; }
 
-		header {
-			text-align: center;
-			padding: 20px;
-		}
+  /* Year progress */
+  .progress-wrap {
+    margin-top:20px;
+    position:relative;
+  }
+  .bar {
+    width:100%;
+    height:30px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    overflow:hidden;
+    position:relative;
+  }
+  .fill {
+    height:100%;
+    background: linear-gradient(90deg,#ff4d4d,#ffcc00);
+    width:0%;
+    transition: width 0.5s linear;
+  }
+  #pctText {
+    position:absolute;
+    top:0; left:0; width:100%; height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-weight:bold;
+    text-shadow: 0 0 5px #000;
+  }
 
-		#nasa-image {
-			width: 100%;
-			max-height: 300px;
-			object-fit: cover;
-			border-bottom: 3px solid #333;
-		}
+  /* Dates section */
+  .dates { margin-top:10px; line-height:1.4em; text-align:center; }
 
-		section {
-			padding: 20px;
-			margin: 20px;
-			background: #161b22;
-			border-radius: 10px;
-			border: 1px solid #30363d;
-		}
+  /* Countdown timers */
+  .countdown { display:flex; justify-content:space-around; margin-top:20px; }
+  .countdown div { text-align:center; }
+  .countdown span { display:block; font-size:1.5em; font-weight:bold; }
 
-		.progress-container {
-			width: 100%;
-			background: #333;
-			border-radius: 10px;
-			overflow: hidden;
-			height: 35px;
-			margin-top: 10px;
-		}
+  /* Dropdown features */
+  .features { margin-top:20px; text-align:center; }
+  .features button {
+    padding:10px 20px;
+    font-size:1em;
+    border:none;
+    border-radius:15px;
+    background: rgba(255,255,255,0.2);
+    color:#fff;
+    cursor:pointer;
+    backdrop-filter: blur(10px);
+  }
+  .features ul {
+    list-style:none;
+    padding:0;
+    margin:10px 0 0 0;
+    display:none;
+    text-align:left;
+    background: rgba(0,0,0,0.2);
+    border-radius:10px;
+    padding:15px;
+  }
+  .features ul li { margin:5px 0; }
 
-		.progress-bar {
-			height: 100%;
-			background: #4caf50;
-			width: 0%;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-weight: bold;
-			font-size: 14px;
-		}
-
-		h2 {
-			margin-top: 0;
-			color: #58a6ff;
-		}
-
-		footer {
-			text-align: center;
-			padding: 20px;
-			color: #aaa;
-		}
-	</style>
+</style>
 </head>
-
 <body>
 
-	<header>
-		<h1>Awesome Year Progress Dashboard</h1>
-		<img id="nasa-image" src="" alt="NASA Image of the Day">
-	</header>
+<section>
+  <h1>Year Progress</h1>
+  <div id="currentTime" style="text-align:center; margin-bottom:10px; font-size:1.2em;"></div>
+  <div class="progress-wrap">
+    <div class="bar">
+      <div class="fill" id="fill"></div>
+    </div>
+    <div id="pctText">0%</div>
+  </div>
+  <div class="dates" id="dateDisplay"></div>
+</section>
 
-	<section id="current-info">
-		<h2>Current Date & Time</h2>
-		<div id="currentDateTime"></div>
-	</section>
+<section>
+  <h2>Upcoming Eclipses</h2>
+  <div class="countdown">
+    <div>
+      <div>Total Lunar Eclipse</div>
+      <span id="lunarCountdown">Loading...</span>
+      <div>March 3, 2026</div>
+    </div>
+    <div>
+      <div>Total Solar Eclipse</div>
+      <span id="solarCountdown">Loading...</span>
+      <div>August 12, 2026</div>
+    </div>
+  </div>
+</section>
 
-	<section id="year-progress">
-		<h2>Year Progress</h2>
-		<div class="progress-container">
-			<div id="progressBar" class="progress-bar">0%</div>
-		</div>
-	</section>
+<section class="features">
+  <button onclick="toggleFeatures()">Included Features ▼</button>
+  <ul id="featuresList">
+    <li>Glassy iOS 26 style UI</li>
+    <li>Full-screen NASA APOD blurred background</li>
+    <li>Year progress bar with current date & time</li>
+    <li>Multi-locale today’s date display: English, Arabic, Bangla, Chinese</li>
+    <li>Countdown timers for next Total Lunar & Solar eclipses</li>
+    <li>Dropdown section for user reference</li>
+  </ul>
+</section>
 
-	<section id="dates-section">
-		<h2>World Date Formats</h2>
-		<p><strong>English (Gregorian):</strong> <span id="dateEnglish"></span></p>
-		<p><strong>Arabic (Hijri):</strong> <span id="dateArabic"></span></p>
-		<p><strong>Bangla:</strong> <span id="dateBangla"></span></p>
-		<p><strong>Chinese Lunar:</strong> <span id="dateChinese"></span></p>
-	</section>
+<script>
+  // Toggle dropdown
+  function toggleFeatures() {
+    const ul = document.getElementById('featuresList');
+    ul.style.display = ul.style.display==='block'?'none':'block';
+  }
 
-	<section id="features">
-		<h2>Included Features</h2>
-		<ul>
-			<li>NASA Live Image of the Day</li>
-			<li>Year Progress Bar (0–100%)</li>
-			<li>Live Date and Time Display</li>
-			<li>English, Arabic, Bangla, Chinese Date Formats</li>
-			<li>Clean Section-Based Layout</li>
-			<li>Mobile Responsive</li>
-		</ul>
-	</section>
+  // Year progress bar
+  function updateProgress() {
+    const now = new Date();
+    const start = new Date(now.getFullYear(),0,1);
+    const end = new Date(now.getFullYear()+1,0,1);
+    const pct = ((now-start)/(end-start))*100;
+    document.getElementById('fill').style.width = pct.toFixed(2)+'%';
+    document.getElementById('pctText').textContent = pct.toFixed(2)+'%';
+    // current time
+    document.getElementById('currentTime').textContent = now.toLocaleString();
+  }
+  setInterval(updateProgress,1000);
+  updateProgress();
 
-	<footer>
-		<p>Built for you.</p>
-	</footer>
+  // Multi-locale dates
+  function updateDates() {
+    const now = new Date();
+    const locales = {
+      "English": "en-US",
+      "Arabic": "ar-SA",
+      "Bangla": "bn-BD",
+      "Chinese": "zh-CN"
+    };
+    const parts = [];
+    for(const label in locales){
+      parts.push(`${label}: ${now.toLocaleDateString(locales[label], {year:'numeric', month:'long', day:'numeric'})}`);
+    }
+    document.getElementById('dateDisplay').innerHTML = parts.join('<br>');
+  }
+  updateDates();
+  setInterval(updateDates,60000);
 
-	<script>
-	//	TABS ARE USED BELOW EXACTLY AS YOU REQUESTED
+  // Countdown timers
+  const lunarDate = new Date("2026-03-03T00:00:00");
+  const solarDate = new Date("2026-08-12T00:00:00");
+  function updateCountdowns(){
+    const now = new Date();
+    function formatCountdown(target){
+      const diff = target-now;
+      if(diff<=0) return "Happening!";
+      const d = Math.floor(diff/1000/60/60/24);
+      const h = Math.floor(diff/1000/60/60%24);
+      const m = Math.floor(diff/1000/60%60);
+      const s = Math.floor(diff/1000%60);
+      return `${d}d ${h}h ${m}m ${s}s`;
+    }
+    document.getElementById('lunarCountdown').textContent = formatCountdown(lunarDate);
+    document.getElementById('solarCountdown').textContent = formatCountdown(solarDate);
+  }
+  setInterval(updateCountdowns,1000);
+  updateCountdowns();
 
-	//	Load NASA Image
-	async function loadNasaImage() {
-		try {
-			const req = await fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY");
-			const data = await req.json();
-			document.getElementById("nasa-image").src = data.url;
-		} catch (e) {
-			document.getElementById("nasa-image").src = "";
-		}
-	}
+  // NASA APOD background
+  const API_KEY = "DEMO_KEY"; // Replace with your NASA API key
+  fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`)
+    .then(res=>res.json())
+    .then(data=>{
+      if(data.media_type==="image"){
+        document.body.style.backgroundImage = `url(${data.url})`;
+      }
+    }).catch(e=>console.error(e));
 
-	//	Update Year Progress
-	function updateYearProgress() {
-		const now = new Date();
-		const start = new Date(now.getFullYear(), 0, 1);
-		const end = new Date(now.getFullYear() + 1, 0, 1);
-		const total = end - start;
-		const elapsed = now - start;
-
-		const percent = ((elapsed / total) * 100).toFixed(2);
-
-		const bar = document.getElementById("progressBar");
-		bar.style.width = percent + "%";
-		bar.textContent = percent + "%";
-	}
-
-	//	Update Multi-Language Dates
-	function updateDateFormats() {
-		const now = new Date();
-
-		// English
-		document.getElementById("dateEnglish").textContent =
-			new Intl.DateTimeFormat("en-US", { dateStyle: "full" }).format(now);
-
-		// Arabic (Hijri)
-		document.getElementById("dateArabic").textContent =
-			new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { dateStyle: "full" }).format(now);
-
-		// Bangla
-		document.getElementById("dateBangla").textContent =
-			new Intl.DateTimeFormat("bn-BD", { dateStyle: "full" }).format(now);
-
-		// Chinese Lunar
-		document.getElementById("dateChinese").textContent =
-			new Intl.DateTimeFormat("zh-CN-u-ca-chinese", { dateStyle: "full" }).format(now);
-	}
-
-	//	Update Date & Time
-	function updateCurrentDateTime() {
-		const now = new Date();
-		document.getElementById("currentDateTime").textContent =
-			new Intl.DateTimeFormat("en-US", {
-				dateStyle: "full",
-				timeStyle: "medium"
-			}).format(now);
-	}
-
-	//	Refresh Every Second
-	setInterval(() => {
-		updateYearProgress();
-		updateCurrentDateTime();
-		updateDateFormats();
-	}, 1000);
-
-	loadNasaImage();
-	updateYearProgress();
-	updateDateFormats();
-	updateCurrentDateTime();
-
-	</script>
+</script>
 
 </body>
 </html>
